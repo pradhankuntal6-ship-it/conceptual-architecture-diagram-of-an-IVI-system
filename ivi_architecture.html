@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>IVI Conceptual Architecture</title>
+<style>
+:root{--bg:#fff;--fg:#1b1f24;--mut:#5b6572;--in:#e8eef7;--app:#dff3e6;--fw:#fdf0d5;--hal:#fbe1e1;--hw:#e6e6ea;--ln:#3b4a5c;--ac:#c0392b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#14171c;--fg:#e8ebef;--mut:#9aa5b1;--in:#243147;--app:#1f3a2a;--fw:#43371b;--hal:#4a2626;--hw:#2c2f36;--ln:#9fb0c4;--ac:#ff8a7a}}
+:root[data-theme="dark"]{--bg:#14171c;--fg:#e8ebef;--mut:#9aa5b1;--in:#243147;--app:#1f3a2a;--fw:#43371b;--hal:#4a2626;--hw:#2c2f36;--ln:#9fb0c4;--ac:#ff8a7a}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,Segoe UI,Arial,sans-serif;padding:16px;line-height:1.5}
+h1{font-size:1.3rem;margin:0 0 4px}p.s{color:var(--mut);margin:0 0 12px}
+.w{overflow-x:auto;max-width:100%}svg{min-width:820px;width:100%;height:auto}
+text{fill:var(--fg);font-family:system-ui,Arial,sans-serif}
+.b{stroke:var(--ln);stroke-width:1.2;rx:8}.t{font-size:13px;font-weight:600}.d{font-size:11px;fill:var(--mut)}
+.a{stroke:var(--ln);stroke-width:1.5;fill:none;marker-end:url(#h)}.n{font-size:11px;fill:var(--ac);font-weight:600}
+.l{font-size:12px;font-weight:700;fill:var(--mut)}
+ol{padding-left:20px}li{margin:4px 0}
+</style></head><body>
+<h1>IVI System – Conceptual Architecture</h1>
+<p class="s">Media + Navigation + Phone Projection (Android Automotive style). Red numbers = data flow; grey text on arrows = interface.</p>
+<div class="w">
+<svg viewBox="0 0 900 640" xmlns="http://www.w3.org/2000/svg">
+<defs><marker id="h" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--ln)"/></marker></defs>
+
+<text class="l" x="10" y="22">USER INPUT</text>
+<rect class="b" x="40" y="30" width="820" height="46" fill="var(--in)"/>
+<text class="t" x="450" y="50" text-anchor="middle">Touchscreen  •  Voice Assistant  •  Steering-wheel keys</text>
+<text class="d" x="450" y="66" text-anchor="middle">InputManager / SystemUI (HMI layer)</text>
+
+<text class="l" x="10" y="112">APPLICATIONS</text>
+<rect class="b" x="40" y="120" width="250" height="60" fill="var(--app)"/>
+<text class="t" x="165" y="146" text-anchor="middle">Media App</text><text class="d" x="165" y="164" text-anchor="middle">Radio, USB, Streaming</text>
+<rect class="b" x="325" y="120" width="250" height="60" fill="var(--app)"/>
+<text class="t" x="450" y="146" text-anchor="middle">Navigation App</text><text class="d" x="450" y="164" text-anchor="middle">Maps, Route, Turn prompts</text>
+<rect class="b" x="610" y="120" width="250" height="60" fill="var(--app)"/>
+<text class="t" x="735" y="146" text-anchor="middle">Projection App</text><text class="d" x="735" y="164" text-anchor="middle">Android Auto / CarPlay UI</text>
+
+<path class="a" d="M165 76V118"/><path class="a" d="M450 76V118"/><path class="a" d="M735 76V118"/>
+<text class="n" x="172" y="100">1</text><text class="d" x="185" y="100">touch / key events</text>
+<text class="d" x="458" y="100">destination / voice cmd</text><text class="d" x="743" y="100">UI events</text>
+
+<text class="l" x="10" y="232">FRAMEWORK / SERVICES</text>
+<rect class="b" x="40" y="240" width="250" height="80" fill="var(--fw)"/>
+<text class="t" x="165" y="264" text-anchor="middle">Media Service</text><text class="d" x="165" y="282" text-anchor="middle">MediaSession, CarMediaService</text><text class="d" x="165" y="298" text-anchor="middle">AudioService + Audio Focus</text>
+<rect class="b" x="325" y="240" width="250" height="80" fill="var(--fw)"/>
+<text class="t" x="450" y="264" text-anchor="middle">Location / Nav Services</text><text class="d" x="450" y="282" text-anchor="middle">LocationManager, Car Service</text><text class="d" x="450" y="298" text-anchor="middle">Vehicle speed, heading fusion</text>
+<rect class="b" x="610" y="240" width="250" height="80" fill="var(--fw)"/>
+<text class="t" x="735" y="264" text-anchor="middle">Projection Service</text><text class="d" x="735" y="282" text-anchor="middle">Video decode, touch relay,</text><text class="d" x="735" y="298" text-anchor="middle">audio routing from phone</text>
+
+<path class="a" d="M165 180V238"/><path class="a" d="M450 180V238"/><path class="a" d="M735 180V238"/>
+<text class="n" x="172" y="205">2</text><text class="d" x="185" y="205">MediaSession API (Binder)</text>
+<text class="d" x="458" y="205">Location API (Binder/AIDL)</text><text class="d" x="743" y="205">Projection API (Binder)</text>
+<path class="a" d="M290 262H610" style="stroke-dasharray:5 4"/>
+<text class="d" x="450" y="234" text-anchor="middle">Audio focus arbitration: nav prompt ducks media; phone call pauses it</text>
+
+<text class="l" x="10" y="372">HAL LAYER</text>
+<rect class="b" x="40" y="380" width="250" height="60" fill="var(--hal)"/>
+<text class="t" x="165" y="406" text-anchor="middle">Audio HAL</text><text class="d" x="165" y="424" text-anchor="middle">Multi-zone mixer, volume groups</text>
+<rect class="b" x="325" y="380" width="250" height="60" fill="var(--hal)"/>
+<text class="t" x="450" y="406" text-anchor="middle">GNSS HAL + Vehicle HAL</text><text class="d" x="450" y="424" text-anchor="middle">Position, speed, gear properties</text>
+<rect class="b" x="610" y="380" width="250" height="60" fill="var(--hal)"/>
+<text class="t" x="735" y="406" text-anchor="middle">Connectivity HAL</text><text class="d" x="735" y="424" text-anchor="middle">USB (AOA) / Wi-Fi / Bluetooth</text>
+
+<path class="a" d="M165 320V378"/><path class="a" d="M450 320V378"/><path class="a" d="M735 320V378"/>
+<text class="n" x="172" y="345">3</text><text class="d" x="185" y="345">AIDL/HIDL HAL interface</text>
+<text class="d" x="458" y="345">HAL properties (AIDL)</text><text class="d" x="743" y="345">Sockets / USB bulk</text>
+
+<text class="l" x="10" y="492">HARDWARE</text>
+<rect class="b" x="40" y="500" width="250" height="60" fill="var(--hw)"/>
+<text class="t" x="165" y="526" text-anchor="middle">DSP / Amplifier / Speakers</text><text class="d" x="165" y="544" text-anchor="middle">I2S / TDM / A2B audio bus</text>
+<rect class="b" x="325" y="500" width="250" height="60" fill="var(--hw)"/>
+<text class="t" x="450" y="526" text-anchor="middle">GPS Receiver + ECUs</text><text class="d" x="450" y="544" text-anchor="middle">UART / CAN bus</text>
+<rect class="b" x="610" y="500" width="250" height="60" fill="var(--hw)"/>
+<text class="t" x="735" y="526" text-anchor="middle">Smartphone</text><text class="d" x="735" y="544" text-anchor="middle">Runs Android Auto / CarPlay</text>
+
+<path class="a" d="M165 440V498"/><path class="a" d="M450 440V498"/><path class="a" d="M735 440V498"/>
+<text class="n" x="172" y="470">4</text><text class="d" x="185" y="470">PCM audio</text>
+<text class="d" x="458" y="470">NMEA / CAN frames</text><text class="d" x="743" y="470">video + audio + touch stream</text>
+
+<text class="d" x="450" y="600" text-anchor="middle">Display path: all apps render via SurfaceFlinger → Display Controller → Head-unit screen</text>
+</svg></div>
+
+<h2 style="font-size:1.05rem">Data flow (example: user taps Play)</h2>
+<ol>
+<li><b>Input:</b> touch event goes from InputManager to the Media App.</li>
+<li><b>Service call:</b> the app calls MediaSession transport controls; Audio Focus is requested from AudioService.</li>
+<li><b>HAL:</b> AudioService routes the stream to the Audio HAL, which selects the volume group and zone.</li>
+<li><b>Hardware:</b> PCM data goes over I2S/TDM to the DSP, amplifier and speakers.</li>
+</ol>
+<p><b>Navigation flow:</b> GPS/CAN → GNSS/Vehicle HAL → Location Service → Navigation App → voice prompt via Audio Focus (ducks media). <b>Projection flow:</b> phone → USB/Wi-Fi → Projection Service → video decode and audio to the head unit; touch is sent back to the phone.</p>
+</body></html>
