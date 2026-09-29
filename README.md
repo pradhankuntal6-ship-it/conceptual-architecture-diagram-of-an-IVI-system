@@ -1,0 +1,1 @@
+# conceptual-architecture-diagram-of-an-IVI-system
